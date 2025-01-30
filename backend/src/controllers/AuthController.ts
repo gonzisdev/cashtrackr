@@ -116,7 +116,7 @@ export class AuthController {
     }
   }
 
-  static resetPassordWithToken = async (req: Request, res: Response) => {
+  static resetPasswordWithToken = async (req: Request, res: Response) => {
     const { token } = req.params
     const { password } = req.body
     try {
@@ -138,5 +138,44 @@ export class AuthController {
 
   static user = async (req: Request, res: Response) => {
     res.status(200).json(req.user)
+  }
+
+  static udpateCurrentUserPassword = async (req: Request, res: Response) => {
+    const { current_password, password } = req.body
+    const { id } = req.user
+    try {
+      const user = await User.findByPk(id)
+      const isPasswordCorrect = await checkPassword(
+        current_password,
+        user.password
+      )
+      if (!isPasswordCorrect) {
+        res.status(401).json({ error: 'La contraseña actual es incorrecta' })
+        return
+      }
+      user.password = await hashPassword(password)
+      await user.save()
+      res.status(200).json('Contraseña actualizada correctamente')
+    } catch (error) {
+      //console.error(error)
+      res.status(500).json({ error: 'Hubo un error' })
+    }
+  }
+
+  static checkPassword = async (req: Request, res: Response) => {
+    const { password } = req.body
+    const { id } = req.user
+    try {
+      const user = await User.findByPk(id)
+      const isPasswordCorrect = await checkPassword(password, user.password)
+      if (!isPasswordCorrect) {
+        res.status(401).json({ error: 'La contraseña es incorrecta' })
+        return
+      }
+      res.status(200).json('Contraseña correcta')
+    } catch (error) {
+      //console.error(error)
+      res.status(500).json({ error: 'Hubo un error' })
+    }
   }
 }

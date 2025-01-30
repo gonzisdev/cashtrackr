@@ -20,7 +20,7 @@ router.post(
   AuthController.createAccount
 )
 router.post(
-  'confirm-account',
+  '/confirm-account',
   body('token')
     .notEmpty()
     .isLength({ min: 6, max: 6 })
@@ -30,7 +30,7 @@ router.post(
 )
 
 router.post(
-  'login',
+  '/login',
   body('password').notEmpty().withMessage('La contraseña es obligatoria'),
   body('email').isEmail().withMessage('El email no es válido'),
   handleInputErrors,
@@ -38,14 +38,14 @@ router.post(
 )
 
 router.post(
-  'forgot-password',
+  '/forgot-password',
   body('email').isEmail().withMessage('El email no es válido'),
   handleInputErrors,
   AuthController.forgotPassword
 )
 
 router.post(
-  'validate-token',
+  '/validate-token',
   body('token')
     .notEmpty()
     .isLength({ min: 6, max: 6 })
@@ -55,7 +55,7 @@ router.post(
 )
 
 router.post(
-  'reset-password/:token',
+  '/reset-password/:token',
   param('token')
     .notEmpty()
     .isLength({ min: 6, max: 6 })
@@ -64,9 +64,30 @@ router.post(
     .isLength({ min: 8 })
     .withMessage('La contraseña debe tener al menos 8 caracteres'),
   handleInputErrors,
-  AuthController.resetPassordWithToken
+  AuthController.resetPasswordWithToken
 )
 
 router.get('/user', authenticate, AuthController.user)
+
+router.post(
+  '/update-password',
+  authenticate,
+  body('current_password')
+    .notEmpty()
+    .withMessage('La contraseña actual no puede estar vacía'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('La nueva contraseña debe tener al menos 8 caracteres'),
+  handleInputErrors,
+  AuthController.udpateCurrentUserPassword
+)
+
+router.post(
+  '/check-password',
+  authenticate,
+  body('password').notEmpty().withMessage('La contraseña no puede estar vacía'),
+  handleInputErrors,
+  AuthController.checkPassword
+)
 
 export default router
