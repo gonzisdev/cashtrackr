@@ -4,7 +4,6 @@ import { checkPassword, hashPassword } from '../utils/auth'
 import { generateToken } from '../utils/token'
 import { AuthEmail } from '../emails/AuthEmail'
 import { generateJWT } from '../utils/jwt'
-process.loadEnvFile('.env')
 
 export class AuthController {
   static createAccount = async (req: Request, res: Response) => {

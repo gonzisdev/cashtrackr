@@ -1,3 +1,5 @@
+import { config } from 'dotenv'
+config()
 import express from 'express'
 import colors from 'colors'
 import morgan from 'morgan'
@@ -20,7 +22,6 @@ async function connectDB() {
 connectDB()
 
 const app = express()
-
 app.use(morgan('dev'))
 
 app.use(express.json())

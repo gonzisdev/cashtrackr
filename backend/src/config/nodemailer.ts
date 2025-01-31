@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-process.loadEnvFile('.env')
 
 const config = () => {
   return {
